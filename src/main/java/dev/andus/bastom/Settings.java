@@ -1,4 +1,4 @@
-package com.github.klainstom.microstom;
+package dev.andus.bastom;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,7 +10,7 @@ public class Settings {
             .setPrettyPrinting()
             //.serializeNulls()
             .create();
-    private static final File settingsFile = new File("micro-settings.json");
+    private static final File settingsFile = new File("settings.json");
 
     private static SettingsState currentSettings = null;
 
@@ -48,6 +48,9 @@ public class Settings {
         private final String ENTITY_VIEW_DISTANCE;
         private final boolean TERMINAL_DISABLED;
 
+        private final boolean EXTS_COMMAND_FOR_PLAYERS;
+        private final boolean BASIC_WORLD_GEN;
+
         private SettingsState() {
             this.SERVER_IP = "localhost";
             this.SERVER_PORT = 25565;
@@ -59,6 +62,9 @@ public class Settings {
             this.CHUNK_VIEW_DISTANCE = null;
             this.ENTITY_VIEW_DISTANCE = null;
             this.TERMINAL_DISABLED = false;
+
+            this.EXTS_COMMAND_FOR_PLAYERS = false;
+            this.BASIC_WORLD_GEN = true;
         }
 
     }
@@ -104,4 +110,7 @@ public class Settings {
     public static String getChunkViewDistance() { return currentSettings.CHUNK_VIEW_DISTANCE; }
     public static String getEntityViewDistance() { return currentSettings.ENTITY_VIEW_DISTANCE; }
     public static boolean isTerminalDisabled() { return currentSettings.TERMINAL_DISABLED; }
+
+    public static boolean extCommandEnabled() { return currentSettings.EXTS_COMMAND_FOR_PLAYERS; }
+    public static boolean worldGen() { return currentSettings.BASIC_WORLD_GEN; }
 }

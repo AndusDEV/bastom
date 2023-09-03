@@ -4,10 +4,10 @@ plugins {
     java
 }
 
-var displayName = "Microstom"
+var displayName = "Bastom"
 
-group = "com.github.klainstom"
-version = "7.0.0"
+group = "dev.andus.bastom"
+version = "1.0.0"
 
 dependencies {
     implementation(libs.minestom)
@@ -30,7 +30,7 @@ tasks {
 
     shadowJar {
         manifest {
-            attributes("Main-Class" to "com.github.klainstom.microstom.Server")
+            attributes("Main-Class" to "dev.andus.bastom.Server")
         }
         archiveBaseName.set(displayName)
         archiveClassifier.set("")

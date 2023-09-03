@@ -1,4 +1,4 @@
-package com.github.klainstom.microstom.commands;
+package dev.andus.bastom.commands;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.ConsoleSender;

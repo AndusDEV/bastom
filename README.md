@@ -1,17 +1,17 @@
-# microstom
+# bastom
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![GitHub](https://img.shields.io/github/license/KlainStom/microstom?style=flat-square&color=b2204c)](https://github.com/KlainStom/microstom/blob/master/LICENSE)
-[![GitHub Repo stars](https://img.shields.io/github/stars/KlainStom/microstom?style=flat-square)](https://github.com/KlainStom/microstom/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/KlainStom/microstom?style=flat-square)](https://github.com/KlainStom/microstom/network/members)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/KlainStom/microstom?style=flat-square)](https://github.com/KlainStom/microstom/releases/latest)
-[![GitHub all releases](https://img.shields.io/github/downloads/KlainStom/microstom/total?style=flat-square)](https://github.com/KlainStom/microstom/releases)
+[![GitHub](https://img.shields.io/github/license/AndusDEV/bastom?style=flat-square&color=b2204c)](https://github.com/AndusDEV/bastom/blob/master/LICENSE)
+[![GitHub Repo stars](https://img.shields.io/github/stars/AndusDEV/bastom?style=flat-square)](https://github.com/AndusDEV/bastom/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/AndusDEV/bastom?style=flat-square)](https://github.com/AndusDEV/bastom/network/members)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/AndusDEV/bastom?style=flat-square)](https://github.com/AndusDEV/bastom/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/AndusDEV/bastom/total?style=flat-square)](https://github.com/AndusDEV/bastom/releases)
 
-Microstom is a minimal minecraft server with [Minestom](https://github.com/Minestom/Minestom) as its core.
+Bastom is a [Minestom](https://github.com/minestom/minestom) minecraft server containing some basic features that could be useful.
+It is based on [Microstom](https://github.com/KlainStom/microstom) - a minimal implementation of Minestom.
 
-Microstom seeks to be a minimal implementation of a Minestom server.
-So it should not include any feature that could have been implemented in an extension.
-Every piece of content has to be added as extension, (almost) nothing is there by default.
+Bastom seeks to still be a minimal implementation of a Minestom server like [Microstom](https://github.com/KlainStom/microstom), but contain some features that can be useful for nearly every server.
+But there's still almost nothing by default.
 
 ## Table of Contents
 
@@ -23,13 +23,13 @@ Every piece of content has to be added as extension, (almost) nothing is there b
 - [License](#license)
 
 ## Install
-You could either just download a [release](https://github.com/KlainStom/microstom/releases) or you compile the server yourself using the following commands under Linux
+You could either just download a [release](https://github.com/AndusDEV/bastom/releases) or you compile the server yourself using the following commands under Linux
 ```shell
-git clone https://github.com/KlainStom/microstom.git
-cd microstom
+git clone https://github.com/AndusDEV/bastom.git
+cd bastom
 ./gradlew build
 ```
-The server jar will be located at `build/libs/Microstom-<VERSION>.jar`.
+The server jar will be located at `build/libs/Bastom-<VERSION>.jar`.
 
 Note that for compiling you need to use a JDK 17.
 
@@ -37,7 +37,7 @@ Note that for compiling you need to use a JDK 17.
 To run the server you need to have a Java 17 runtime installed.
 Use the following command to start the server for the first time.
 ```shell
-java -jar Microstom-<VERSION>.jar
+java -jar Bastom-<VERSION>.jar
 ```
 This generates a `start.sh` script and a settings file with these default values:
 ```json5
@@ -67,7 +67,8 @@ This server itself does not add some API. But it features [Minestom's API](https
 
 ## Maintainers
 
-[@offby0point5](https://github.com/offby0point5)
+ - [@andusdev](https://github.com/andusdev)
+ - [Original (microstom)](https://github.com/KlainStom/microstom)
 
 ## Contributing
 
