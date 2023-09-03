@@ -16,6 +16,7 @@ public class ExtensionsCommand extends Command {
     }
 
     private void execute(CommandSender sender, CommandContext context) {
+        // If player executes the command and extCommandEnabled is false don't run it.
         if (sender.isPlayer()) {
             if (!Settings.extCommandEnabled()) {
                 sender.sendMessage("This command can only be used by the server console!");
@@ -23,6 +24,7 @@ public class ExtensionsCommand extends Command {
             }
         }
 
+        // Send loaded extensions
         String extensions = String.join(", ", MinecraftServer.getExtensionManager().getExtensions().toString());
         sender.sendMessage("Loaded Extensions: " + extensions);
     }
