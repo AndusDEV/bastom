@@ -8,6 +8,6 @@ public class Commands {
     public static final Command RESTART = new RestartCommand();
     // Bastom
     public static final Command EXTENSIONS = new ExtensionsCommand();
-
+    public static final Command HELP = new HelpCommand();
     public static final Command PLAYER_LIST = new PlayerListCommand();
 }

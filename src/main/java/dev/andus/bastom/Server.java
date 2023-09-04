@@ -31,8 +31,9 @@ import java.util.Objects;
 
 public class Server {
     public static final String VERSION = "&version";
-    private static final String START_SCRIPT_FILENAME = "start.sh";
     private static final String MOTD_FILE = "motd.txt";
+    private static final String HELP_FILE = "help.txt";
+    private static final String START_SCRIPT_FILENAME = "start.sh";
 
     public static void main(String[] args) throws IOException {
         Settings.read();
@@ -67,6 +68,17 @@ public class Server {
             MinecraftServer.LOGGER.info("Modify the motd.txt file to change the server motd.");
         }
 
+        // Create help file
+        File helpTextFile = new File(HELP_FILE);
+        if (helpTextFile.isDirectory()) MinecraftServer.LOGGER.warn("Can't create help.txt file!");
+        if (!helpTextFile.isFile()) {
+            MinecraftServer.LOGGER.info("Creating help file.");
+            Files.copy(
+                    Objects.requireNonNull(Server.class.getClassLoader().getResourceAsStream(HELP_FILE)),
+                    helpTextFile.toPath());
+            MinecraftServer.LOGGER.info("Modify the help.txt file to change /help output.");
+        }
+
         // Create start script
         File startScriptFile = new File(START_SCRIPT_FILENAME);
         if (startScriptFile.isDirectory()) MinecraftServer.LOGGER.warn("Can't create startup script!");
@@ -88,13 +100,13 @@ public class Server {
             // Create the instance
             InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
             instanceContainer.setGenerator(unit ->
-                    unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK));
+                    unit.modifier().fillHeight(0, 4, Block.GRASS_BLOCK));
             // Add an event callback to specify the spawning instance (and the spawn position)
             GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
             globalEventHandler.addListener(PlayerLoginEvent.class, event -> {
                 final Player player = event.getPlayer();
                 event.setSpawningInstance(instanceContainer);
-                player.setRespawnPoint(new Pos(0, 42, 0));
+                player.setRespawnPoint(new Pos(0, 5, 0));
             });
         }
 
@@ -109,6 +121,7 @@ public class Server {
         commandManager.register(Commands.RESTART);
         commandManager.register(Commands.EXTENSIONS);
         commandManager.register(Commands.PLAYER_LIST);
+        commandManager.register(Commands.HELP);
         consoleSender.addPermission(Permissions.SHUTDOWN);
         consoleSender.addPermission(Permissions.RESTART);
         consoleSender.addPermission(Permissions.EXTENSIONS);
@@ -132,27 +145,13 @@ public class Server {
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
         globalEventHandler.addListener(ServerListPingEvent.class, event -> {
             ResponseData responseData = event.getResponseData();
-            responseData.setDescription(readMotdFromFile("motd.txt"));
+            responseData.setDescription(Utils.readFromFile("motd.txt", "§7A §bBastom §7Server!"));
         });
 
         MinecraftServer.LOGGER.info("Running in " + Settings.getMode() + " mode.");
-        MinecraftServer.LOGGER.info("MOTD set to: " + readMotdFromFile("motd.txt"));
+        MinecraftServer.LOGGER.info("MOTD set to: " + Utils.readFromFile("motd.txt", "§7A §bBastom §7Server!"));
         MinecraftServer.LOGGER.info("Listening on " + Settings.getServerIp() + ":" + Settings.getServerPort());
 
         server.start(Settings.getServerIp(), Settings.getServerPort());
-    }
-
-    private static String readMotdFromFile(String filename) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            StringBuilder motdBuilder = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                motdBuilder.append(line).append("\n");
-            }
-            return motdBuilder.toString().trim();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "A Bastom Server"; // Fallback MOTD
-        }
     }
 }
