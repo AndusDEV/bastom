@@ -122,9 +122,11 @@ public class Server {
         commandManager.register(Commands.EXTENSIONS);
         commandManager.register(Commands.PLAYER_LIST);
         commandManager.register(Commands.HELP);
+        commandManager.register(Commands.SERVER_INFO);
         consoleSender.addPermission(Permissions.SHUTDOWN);
         consoleSender.addPermission(Permissions.RESTART);
         consoleSender.addPermission(Permissions.EXTENSIONS);
+        consoleSender.addPermission(Permissions.SERVER_INFO);
         MinecraftServer.getExtensionManager().setExtensionDataRoot(Path.of("config"));
 
         switch (Settings.getMode()) {

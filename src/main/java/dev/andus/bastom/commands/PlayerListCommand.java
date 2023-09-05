@@ -13,7 +13,6 @@ public class PlayerListCommand extends Command {
     }
 
     private void execute(CommandSender sender, CommandContext context) {
-        // Get the list of online players
         Iterable<Player> onlinePlayers = MinecraftServer.getConnectionManager().getOnlinePlayers();
 
         // Build a list of player names
@@ -26,8 +25,6 @@ public class PlayerListCommand extends Command {
         if (onlinePlayers.iterator().hasNext()) {
             playerList.setLength(playerList.length() - 2);
         }
-
-        // Send the player list to the sender
         sender.sendMessage(playerList.toString());
     }
 }

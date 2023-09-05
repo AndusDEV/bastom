@@ -8,4 +8,5 @@ public class Permissions {
     public static final Permission RESTART = new Permission("bastom.restart");
     // Bastom
     public static final Permission EXTENSIONS = new Permission("bastom.exts");
+    public static final Permission SERVER_INFO = new Permission("bastom.svinfo");
 }
