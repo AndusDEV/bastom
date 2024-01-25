@@ -11,12 +11,14 @@ version = "1.0.0"
 
 dependencies {
     implementation(libs.minestom)
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 tasks {
     blossom {
         replaceToken("&Name", displayName)
         replaceToken("&version", version)
+        replaceToken("&commit", libs.versions.minestom.get())
     }
 
     processResources {

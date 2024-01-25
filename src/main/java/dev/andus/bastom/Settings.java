@@ -2,6 +2,7 @@ package dev.andus.bastom;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minestom.server.MinecraftServer;
 
 import java.io.*;
 
@@ -11,8 +12,10 @@ public class Settings {
             //.serializeNulls()
             .create();
     private static final File settingsFile = new File("settings.json");
+    private static final File worldsFile = new File("worlds.json");
 
     private static SettingsState currentSettings = null;
+    private static WorldsState currentWorlds = null;
 
     public static void read() {
         try {
@@ -21,16 +24,35 @@ public class Settings {
         } catch (FileNotFoundException e) {
             currentSettings = new SettingsState();
             try {
-                write();
+                writeSettings();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(worldsFile));
+            currentWorlds = gson.fromJson(reader, WorldsState.class);
+            MinecraftServer.LOGGER.warn("Found");
+        } catch (FileNotFoundException e) {
+            currentWorlds = new WorldsState();
+            try {
+                writeWorlds();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
     }
 
-    public static void write() throws IOException {
+    public static void writeSettings() throws IOException {
         String json = gson.toJson(currentSettings);
         Writer writer = new FileWriter(settingsFile);
+        writer.write(json);
+        writer.close();
+    }
+
+    public static void writeWorlds() throws IOException {
+        String json = gson.toJson(currentWorlds);
+        Writer writer = new FileWriter(worldsFile);
         writer.write(json);
         writer.close();
     }
@@ -49,7 +71,7 @@ public class Settings {
         private final boolean TERMINAL_DISABLED;
 
         private final boolean EXTS_COMMAND_FOR_PLAYERS;
-        private final boolean BASIC_WORLD_GEN;
+        private final boolean OPEN_TO_LAN;
 
         private SettingsState() {
             this.SERVER_IP = "localhost";
@@ -64,9 +86,20 @@ public class Settings {
             this.TERMINAL_DISABLED = false;
 
             this.EXTS_COMMAND_FOR_PLAYERS = false;
-            this.BASIC_WORLD_GEN = true;
+            this.OPEN_TO_LAN = false;
         }
+    }
 
+    private static class WorldsState {
+        private final boolean ENABLE_INSTANCE;
+        private final WorldType WORLD_TYPE;
+        private final String WORLD_LOC;
+
+        private WorldsState() {
+            this.ENABLE_INSTANCE = false;
+            this.WORLD_TYPE = WorldType.FLAT;
+            this.WORLD_LOC = "path/to/your/world";
+        }
     }
 
     public enum RunMode {
@@ -78,6 +111,22 @@ public class Settings {
         private final String name;
 
         RunMode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
+
+    public enum WorldType {
+        FLAT("flat"),
+        LOADED("loaded");
+
+        private final String name;
+
+        WorldType(String name) {
             this.name = name;
         }
 
@@ -112,5 +161,9 @@ public class Settings {
     public static boolean isTerminalDisabled() { return currentSettings.TERMINAL_DISABLED; }
 
     public static boolean extCommandEnabled() { return currentSettings.EXTS_COMMAND_FOR_PLAYERS; }
-    public static boolean worldGen() { return currentSettings.BASIC_WORLD_GEN; }
+
+    public static boolean isOpenToLAN() { return currentSettings.OPEN_TO_LAN; }
+
+    public static boolean isInstanceEnabled() { return currentWorlds.ENABLE_INSTANCE; }
+    public static WorldType getWorldType() { return currentWorlds.WORLD_TYPE; }
 }

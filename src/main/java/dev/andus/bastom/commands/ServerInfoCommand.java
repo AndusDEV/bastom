@@ -1,8 +1,6 @@
 package dev.andus.bastom.commands;
 
 import dev.andus.bastom.Server;
-import dev.andus.bastom.Settings;
-import net.minestom.server.Git;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.ServerSender;
@@ -11,7 +9,7 @@ import net.minestom.server.command.builder.CommandContext;
 
 public class ServerInfoCommand extends Command {
     public ServerInfoCommand() {
-        super("serverinfo", "svinfo");
+        super("serverinfo", "srvinfo");
         setCondition((sender, commandString) -> (sender instanceof ServerSender)
                 || sender.hasPermission(Permissions.SERVER_INFO));
         setDefaultExecutor(this::execute);
@@ -20,7 +18,7 @@ public class ServerInfoCommand extends Command {
     private void execute(CommandSender sender, CommandContext context) {
         String javaVer = String.valueOf(Runtime.version());
         String bastomVer = Server.VERSION;
-        String minestomVer = Git.commit();
+        String minestomVer = "&commit";
         String protocolVer = MinecraftServer.PROTOCOL_VERSION + "(" + MinecraftServer.VERSION_NAME + ")";
 
         StringBuilder serverInfoOutput = new StringBuilder("Server Information: ").append("\n");

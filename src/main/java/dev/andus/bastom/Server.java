@@ -4,26 +4,22 @@ import dev.andus.bastom.commands.Commands;
 import dev.andus.bastom.commands.Permissions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.Git;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.EventNode;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.bungee.BungeeCordProxy;
+import net.minestom.server.extras.lan.OpenToLAN;
 import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.ping.ResponseData;
-import net.minestom.server.ping.ServerListPingType;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,7 +46,7 @@ public class Server {
             MinecraftServer.LOGGER.info("====== VERSIONS ======");
             MinecraftServer.LOGGER.info("Java: " + Runtime.version());
             MinecraftServer.LOGGER.info("&Name: " + VERSION);
-            MinecraftServer.LOGGER.info("Minestom commit: " + Git.commit());
+            MinecraftServer.LOGGER.info("Minestom commit: " + "&commit");
             MinecraftServer.LOGGER.info("Supported protocol: %d (%s)".formatted(MinecraftServer.PROTOCOL_VERSION, MinecraftServer.VERSION_NAME));
             MinecraftServer.LOGGER.info("======================");
         }
@@ -89,45 +85,14 @@ public class Server {
                     startScriptFile.toPath());
             Runtime.getRuntime().exec("chmod u+x start.sh");
             MinecraftServer.LOGGER.info("Use './start.sh' to start the server.");
+            MinecraftServer.LOGGER.info("You can modify the server settings using settings.json file, and world using worlds.json");
             System.exit(0);
         }
 
         // Actually start server
         MinecraftServer server = MinecraftServer.init();
-        InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-
-        if (Settings.worldGen()) {
-            // Create the instance
-            InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
-            instanceContainer.setGenerator(unit ->
-                    unit.modifier().fillHeight(0, 4, Block.GRASS_BLOCK));
-            // Add an event callback to specify the spawning instance (and the spawn position)
-            GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
-            globalEventHandler.addListener(PlayerLoginEvent.class, event -> {
-                final Player player = event.getPlayer();
-                event.setSpawningInstance(instanceContainer);
-                player.setRespawnPoint(new Pos(0, 5, 0));
-            });
-        }
-
-        MinecraftServer.getGlobalEventHandler().addListener(PlayerLoginEvent.class, event -> {
-            if (instanceManager.getInstances().isEmpty())
-                event.getPlayer().kick(Component.text("There is no instance available!", NamedTextColor.RED));
-        });
-
-        var commandManager = MinecraftServer.getCommandManager();
-        var consoleSender = commandManager.getConsoleSender();
-        commandManager.register(Commands.SHUTDOWN);
-        commandManager.register(Commands.RESTART);
-        commandManager.register(Commands.EXTENSIONS);
-        commandManager.register(Commands.PLAYER_LIST);
-        commandManager.register(Commands.HELP);
-        commandManager.register(Commands.SERVER_INFO);
-        consoleSender.addPermission(Permissions.SHUTDOWN);
-        consoleSender.addPermission(Permissions.RESTART);
-        consoleSender.addPermission(Permissions.EXTENSIONS);
-        consoleSender.addPermission(Permissions.SERVER_INFO);
-        MinecraftServer.getExtensionManager().setExtensionDataRoot(Path.of("config"));
+        setupWorld();
+        registerCommands();
 
         switch (Settings.getMode()) {
             case OFFLINE:
@@ -150,10 +115,56 @@ public class Server {
             responseData.setDescription(Utils.readFromFile("motd.txt", "§7A §bBastom §7Server!"));
         });
 
-        MinecraftServer.LOGGER.info("Running in " + Settings.getMode() + " mode.");
+        if (Settings.isOpenToLAN()) {
+            OpenToLAN.open();
+        }
+
+        MinecraftServer.LOGGER.info("Running in " + Settings.getMode() + " mode. (Opened to LAN: " + OpenToLAN.isOpen() + ")");
         MinecraftServer.LOGGER.info("MOTD set to: " + Utils.readFromFile("motd.txt", "§7A §bBastom §7Server!"));
         MinecraftServer.LOGGER.info("Listening on " + Settings.getServerIp() + ":" + Settings.getServerPort());
 
         server.start(Settings.getServerIp(), Settings.getServerPort());
+    }
+
+    public static void setupWorld() {
+        InstanceManager instanceManager = MinecraftServer.getInstanceManager();
+        if (Settings.isInstanceEnabled() && Settings.getWorldType() == Settings.WorldType.FLAT) {
+            // Create the instance
+            InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
+            instanceContainer.setGenerator(unit ->
+                    unit.modifier().fillHeight(0, 4, Block.GRASS_BLOCK));
+            // Add an event callback to specify the spawning instance (and the spawn position)
+            GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+            globalEventHandler.addListener(PlayerLoginEvent.class, event -> {
+                final Player player = event.getPlayer();
+                event.setSpawningInstance(instanceContainer);
+                player.setRespawnPoint(new Pos(0, 5, 0));
+            });
+        } else if (Settings.isInstanceEnabled() && Settings.getWorldType() == Settings.WorldType.LOADED) {
+
+        } else {
+
+        }
+
+        MinecraftServer.getGlobalEventHandler().addListener(PlayerLoginEvent.class, event -> {
+            if (instanceManager.getInstances().isEmpty())
+                event.getPlayer().kick(Component.text("There is no instance available!", NamedTextColor.RED));
+        });
+    }
+    
+    public static void registerCommands() {
+        var commandManager = MinecraftServer.getCommandManager();
+        var consoleSender = commandManager.getConsoleSender();
+        commandManager.register(Commands.SHUTDOWN);
+        commandManager.register(Commands.RESTART);
+        commandManager.register(Commands.EXTENSIONS);
+        commandManager.register(Commands.PLAYER_LIST);
+        commandManager.register(Commands.HELP);
+        commandManager.register(Commands.SERVER_INFO);
+        consoleSender.addPermission(Permissions.SHUTDOWN);
+        consoleSender.addPermission(Permissions.RESTART);
+        consoleSender.addPermission(Permissions.EXTENSIONS);
+        consoleSender.addPermission(Permissions.SERVER_INFO);
+        MinecraftServer.getExtensionManager().setExtensionDataRoot(Path.of("config"));
     }
 }
