@@ -1,9 +1,12 @@
 package dev.andus.bastom.commands;
 
+import dev.andus.bastom.Server;
+import net.hollowcube.minestom.extensions.ExtensionBootstrap;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.ConsoleSender;
 import net.minestom.server.command.ServerSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.extensions.ExtensionManager;
 
 import java.io.IOException;
 
@@ -16,10 +19,10 @@ public class RestartCommand extends Command {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     new ProcessBuilder("./start.sh").start();
-                    MinecraftServer.LOGGER.info("Start new server.");
+                    Server.logger.info("Start new server.");
                 } catch (IOException e) {
                     if (!(sender instanceof ConsoleSender)) sender.sendMessage("Could not restart server.");
-                    LOGGER.error("Could not restart server.", e);
+                    Server.logger.error("Could not restart server.", e);
                 }
             }, "RestartHook"));
             MinecraftServer.stopCleanly();

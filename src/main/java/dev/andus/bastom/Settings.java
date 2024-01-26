@@ -122,7 +122,7 @@ public class Settings {
 
     public enum WorldType {
         FLAT("flat"),
-        LOADED("loaded");
+        ANVIL("anvil");
 
         private final String name;
 
@@ -166,4 +166,5 @@ public class Settings {
 
     public static boolean isInstanceEnabled() { return currentWorlds.ENABLE_INSTANCE; }
     public static WorldType getWorldType() { return currentWorlds.WORLD_TYPE; }
+    public static String getWorldLoc() { return currentWorlds.WORLD_LOC; }
 }

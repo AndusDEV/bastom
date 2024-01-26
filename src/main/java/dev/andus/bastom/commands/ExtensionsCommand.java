@@ -1,6 +1,7 @@
 package dev.andus.bastom.commands;
 
 import dev.andus.bastom.Settings;
+import net.hollowcube.minestom.extensions.ExtensionBootstrap;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.ServerSender;
@@ -25,7 +26,7 @@ public class ExtensionsCommand extends Command {
         }
 
         // Send loaded extensions
-        String extensions = String.join(", ", MinecraftServer.getExtensionManager().getExtensions().toString());
+        String extensions = String.join(", ", ExtensionBootstrap.getExtensionManager().getExtensions().toString());
         sender.sendMessage("Loaded Extensions: " + extensions);
     }
 }
