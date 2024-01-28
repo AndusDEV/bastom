@@ -1,5 +1,7 @@
 # bastom
 
+# [!] This project moved to `LavenderPowered` organization, and split up into mutliple "editions". Please check out those [here](https://github.com/LavenderPowered)
+
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![GitHub](https://img.shields.io/github/license/AndusDEV/bastom?style=flat-square&color=b2204c)](https://github.com/AndusDEV/bastom/blob/master/LICENSE)
 [![GitHub Repo stars](https://img.shields.io/github/stars/AndusDEV/bastom?style=flat-square)](https://github.com/AndusDEV/bastom/stargazers)
